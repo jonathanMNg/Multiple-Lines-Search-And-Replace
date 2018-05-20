@@ -103,7 +103,7 @@ def confirmation(source_str, replace_str, filenames):
         print("Please make your changes and run the program again!")
         return infoResponse, backupResponse
     print('- - - - - - - - - - - - - - - - - - - - -')
-    isBackup = input("Do you want to create a backup for your modified files? (y/N) ")
+    isBackup = input("Do you want to create a backup for the modified files? (y/N) ")
     if(isBackup.strip().lower() == 'y'):
         backupResponse = True
         return infoResponse, backupResponse
@@ -116,7 +116,6 @@ def main():
     #check if arguments are valid
     if(not validArgs(sys.argv)):
         sys.exit()
-
     dir_name = sys.argv[1]
     old_string = sys.argv[2]
     new_string = sys.argv[3]
@@ -133,14 +132,14 @@ def main():
             filenames.append(filename)
     if(len(filenames) == 0):
         sys.exit("Couldn't find any file with extension `.%s`" % file_ext)
-    #eliminate source file
+    #eliminate source file from target files
     if(not('./' in old_string)): #check if input filename is valid
         old_string = './' + old_string #if not, change it
     removeElementFromList(filenames, old_string) #if yes, remove it
-    #eliminate backup files
+    #eliminate backup files from target files
     backupFiles = scan_dir(backupDir)
     removeMultipleElementsFromList(filenames, backupFiles)
-    origDir = os.path.realpath(dir_name).split('/')[-1] + '/'
+    origDir = os.path.realpath(dir_name).split('/')[-1] + '/' #name of basefolder
     backupFolder = getBackupFolderName(backupDir) + origDir
     #get string to search for and string to replace with
     source_str = readFile(old_string)
