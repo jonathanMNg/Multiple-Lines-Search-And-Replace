@@ -92,6 +92,7 @@ def confirmation(source_str, replace_str, filenames):
     print("New string: \n%s" % '\n'.join(replace_str))
     print('- - - - - - - - - - - - - - - - - - - - -')
     print("Target files: \n%s" % '\n'.join(filenames))
+    print('- - - - - - - - - - - - - - - - - - - - -')
     isCorrect = input("Are these information all correct? (y/N) ")
     if(isCorrect.strip().lower() == 'y'):
         infoResponse = True
@@ -101,6 +102,7 @@ def confirmation(source_str, replace_str, filenames):
     else:
         print("Please make your changes and run the program again!")
         return infoResponse, backupResponse
+    print('- - - - - - - - - - - - - - - - - - - - -')
     isBackup = input("Do you want to create a backup for your modified files? (y/N) ")
     if(isBackup.strip().lower() == 'y'):
         backupResponse = True
