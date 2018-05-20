@@ -17,10 +17,10 @@ python3 search_and_replace.py target_location search_string[file] replace_string
 Then follow the prompt and enter your choice
 ## Example
 
--`target_location`: `tmp/`
--`search_string`: `old_string.txt`
--`replace_string`: `new_string.txt`
--`target_file_extension`: `php`
+- `target_location`: `tmp/`
+- `search_string`: `old_string.txt`
+- `replace_string`: `new_string.txt`
+- `target_file_extension`: `php`
 
 ### Run:
 ```
