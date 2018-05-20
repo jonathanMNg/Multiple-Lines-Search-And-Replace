@@ -3,7 +3,10 @@
 <title>Sample</title>
 </head>
 <body>
+
 </body>
 </html>
-<?php require_once('../footer.php');?>
+<script>
+$.example('testing')
+</script>
 <p></p>

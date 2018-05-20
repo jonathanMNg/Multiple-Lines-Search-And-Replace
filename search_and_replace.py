@@ -77,8 +77,8 @@ def getBackupFolderName(dest):
             break
     return backupDest + '/'
 def doBackupFile(filename, backupFolder):
-
-    backupFile = backupFolder + os.path.dirname(filename).replace('../','') + '/' + os.path.basename(filename)
+    baseFolder = '/' if not('./' in os.path.dirname(filename)) else os.path.dirname(filename) + '/'
+    backupFile = os.path.abspath(backupFolder) + baseFolder + os.path.basename(filename)
     backupDest = os.path.dirname(backupFile)
     if not os.path.exists(backupDest):
         os.makedirs(backupDest)
@@ -122,6 +122,8 @@ def main():
     #scan for files to process
     scanned_files = scan_dir(dir_name)
     filenames = []
+    if(not('/' in dir_name)):
+        dir_name = dir_name + '/'
     backupDir = dir_name + BACKUPFOLDER
     backupFolder = ''
     for filename in scanned_files:
