@@ -63,7 +63,7 @@ $.example('testing')
 <p></p>
 
 ```
-**Modified `index.php`***
+**Modified `index.php`**
 ```
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
