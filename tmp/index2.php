@@ -9,8 +9,7 @@
 </body>
 </html>
 <?php require_once('../footer.php');?>
-<p></p>
-<?php
+<?php require_once('../foot.php');?>
 mysql_free_result($rsNews);
 mysql_free_result($rsEvents);
 mysql_free_result($rsEcat);

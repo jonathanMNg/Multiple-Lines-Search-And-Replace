@@ -1,3 +1,2 @@
-<script>
-$.example('testing')
-</script>
+<?php require_once('../footer.php');?>
+<p></p>

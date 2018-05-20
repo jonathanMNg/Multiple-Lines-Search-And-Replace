@@ -4,7 +4,7 @@ import os, sys, fileinput
 from shutil import copy
 #Define constants
 ARGV_LEN = 5
-FUNCTION_NAME = "search_and_replace.py"
+PROGRAM_NAME = "search_and_replace.py"
 ARGV_1 = "target[file|dir]"
 ARGV_2 = "search-string[file]"
 ARGV_3 = "replace_string[file]"
@@ -59,7 +59,7 @@ def validArgs(argv):
     valid = True
     if(len(sys.argv) != ARGV_LEN):
         print("Error: Invalid arguments")
-        print("Usage: python3 %s %s %s %s" % (FUNCTION_NAME, ARGV_1, ARGV_2, ARGV_3))
+        print("Usage: python3 %s %s %s %s" % (PROGRAM_NAME, ARGV_1, ARGV_2, ARGV_3))
         valid = False
     return valid
 def doBackupDir(filenames):
@@ -83,6 +83,23 @@ def doBackupFile(filename, backupFolder):
     if not os.path.exists(backupDest):
         os.makedirs(backupDest)
     copy(filename, backupFile)
+def doMultipleLineSAR(filename, target_str, source_str, replace_str):
+    linePtr = []
+    pos = 0
+    lineNo = isStringFound(source_str, target_str)
+    while(lineNo >=0):
+        pos = pos + lineNo + 1
+        lineNo = isStringFound(source_str, target_str[pos:])
+        linePtr.append(pos-1)
+    for line in reversed(linePtr):
+        target_str[line:line+len(source_str)] = replace_str
+    target_str = '\n'.join(target_str)
+    with open(filename, "w") as file:
+        file.write(target_str)
+def doSingleLineSAR(filename, source_str, replace_str):
+    with fileinput.FileInput(filename, inplace=True, backup='') as file:
+        for line in file:
+            print(line.replace(source_str[0], replace_str[0]), end='')
 def confirmation(source_str, replace_str, filenames):
     infoResponse = False
     backupResponse = False
@@ -149,15 +166,20 @@ def main():
         sys.exit()
     print("Modified files: ")
     for filename in filenames:
-        target_str = readFile(filename)
-        lineNo = isStringFound(source_str, target_str)
-        if(lineNo >= 0):
+        #if there is only 1 line each in source_str and target_str, do search and replace line by line
+        if(len(source_str) == 1 and len(replace_str) == 1):
             print(filename)
             if(needBackup):
                 doBackupFile(filename, backupFolder)
-            target_str[lineNo:lineNo+len(source_str)] = replace_str
-            target_str = '\n'.join(target_str)
-            with open(filename, "w") as file:
-                file.write(target_str)
+            doSingleLineSAR(filename, source_str, replace_str)
+        #else do search and replace multiple line
+        else:
+            target_str = readFile(filename)
+            numLine = isStringFound(source_str, target_str)
+            if(numLine >= 0):
+                print(filename)
+                if(needBackup):
+                    doBackupFile(filename, backupFolder)
+                doMultipleLineSAR(filename, target_str, source_str, replace_str)
 if __name__=="__main__":
     main()
