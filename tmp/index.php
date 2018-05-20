@@ -5,8 +5,6 @@
 <body>
 </body>
 </html>
-<?php require_once('../footer.php');?>
 <p></p>
 <random></random>
-<?php require_once('../footer.php');?>
 <p></p>

@@ -1,2 +1,2 @@
-<?php require_once('../footer.php');?>
-<p></p>
+
+<?php require_once('../foot21.php');?>dasdasdasdas

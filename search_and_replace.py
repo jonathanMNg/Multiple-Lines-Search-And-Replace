@@ -35,13 +35,19 @@ def scan_dir(dir_name):
         for file in files:
             scanned_files.append( (os.path.join(subdir,file)))
     return scanned_files
-def isStringFound(source,target):
+def isLineFound(source,target):
     len_s = len(source) #so we don't recompute length of s on every iteration
     for i in range(len(target) - len_s+1):
         if(source == target[i:len_s+i]):
             return i
     else :
         return -1
+def isStringFound(source_str, filename):
+    with fileinput.FileInput(filename, inplace=False, backup='') as file:
+        for line in file:
+            if(line.find(source_str[0])>=0):
+                return True
+    return False
 def removeElementFromList(l, val):
     if(val in l):
         l.remove(val)
@@ -86,10 +92,10 @@ def doBackupFile(filename, backupFolder):
 def doMultipleLineSAR(filename, target_str, source_str, replace_str):
     linePtr = []
     pos = 0
-    lineNo = isStringFound(source_str, target_str)
+    lineNo = isLineFound(source_str, target_str)
     while(lineNo >=0):
         pos = pos + lineNo + 1
-        lineNo = isStringFound(source_str, target_str[pos:])
+        lineNo = isLineFound(source_str, target_str[pos:])
         linePtr.append(pos-1)
     for line in reversed(linePtr):
         target_str[line:line+len(source_str)] = replace_str
@@ -168,14 +174,15 @@ def main():
     for filename in filenames:
         #if there is only 1 line each in source_str and target_str, do search and replace line by line
         if(len(source_str) == 1 and len(replace_str) == 1):
-            print(filename)
-            if(needBackup):
-                doBackupFile(filename, backupFolder)
-            doSingleLineSAR(filename, source_str, replace_str)
+            if (isStringFound(source_str, filename)):
+                print(filename)
+                if(needBackup):
+                    doBackupFile(filename, backupFolder)
+                doSingleLineSAR(filename, source_str, replace_str)
         #else do search and replace multiple line
         else:
             target_str = readFile(filename)
-            numLine = isStringFound(source_str, target_str)
+            numLine = isLineFound(source_str, target_str)
             if(numLine >= 0):
                 print(filename)
                 if(needBackup):
