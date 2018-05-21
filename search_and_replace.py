@@ -38,7 +38,7 @@ def scan_dir(dir_name, list):
                     scanned_files.append( (os.path.join(subdir,file)))
         elif(list=='dir'):
             for file in os.listdir(dir_name):
-                if(os.path.isdir(dir_name+file)):
+                if(os.path.isdir(dir_name+'/'+file)):
                     file = file + '/'
                 scanned_files.append(file)
     return scanned_files
