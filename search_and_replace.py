@@ -158,6 +158,7 @@ def main():
     #scan for files to process
     scanned_files = scan_dir(dir_name, list='all')
     scanned_dir = scan_dir(dir_name, list='dir')
+    #sort the scanned dir by type and alphabet order
     scanned_dir.sort(key=sortByType)
     filenames = []
     if(not('/' in dir_name)):
@@ -175,7 +176,8 @@ def main():
     removeElementFromList(filenames, old_string) #if yes, remove it
     #eliminate backup files from target files
     backupFiles = scan_dir(backupDir, list='all')
-    removeMultipleElementsFromList(filenames, backupFiles)
+    removeMultipleElementsFromList(filenames, backupFiles) #remove backup folder from target files
+    removeElementFromList(scanned_dir, BACKUPFOLDER + '/') #remove backup folder from scanned_dir
     origDir = os.path.realpath(dir_name).split('/')[-1] + '/' #name of basefolder
     backupFolder = getBackupFolderName(backupDir) + origDir
     #get string to search for and string to replace with
