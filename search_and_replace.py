@@ -24,17 +24,29 @@ def readFile(filename):
     except UnicodeDecodeError:
         pass
     return lines
-def scan_dir(dir_name):
+def scan_dir(dir_name, list):
     scanned_files = []
     if(os.path.isfile(dir_name)):
         scanned_files.append(dir_name)
         return scanned_files
     elif(not(os.path.isdir(dir_name))):
         return scanned_files
-    for subdir, dirs, files in os.walk(dir_name):
-        for file in files:
-            scanned_files.append( (os.path.join(subdir,file)))
+    else:
+        if(list=='all'):
+            for subdir, dirs, files in os.walk(dir_name):
+                for file in files:
+                    scanned_files.append( (os.path.join(subdir,file)))
+        elif(list=='dir'):
+            for file in os.listdir(dir_name):
+                if(os.path.isdir(dir_name+file)):
+                    file = file + '/'
+                scanned_files.append(file)
     return scanned_files
+def sortByType(filename):
+    if filename[-1] == '/':
+        return filename[-1] + filename
+    else:
+        return filename
 def isLineFound(source,target):
     len_s = len(source) #so we don't recompute length of s on every iteration
     for i in range(len(target) - len_s+1):
@@ -144,7 +156,9 @@ def main():
     new_string = sys.argv[3]
     file_ext = sys.argv[4]
     #scan for files to process
-    scanned_files = scan_dir(dir_name)
+    scanned_files = scan_dir(dir_name, list='all')
+    scanned_dir = scan_dir(dir_name, list='dir')
+    scanned_dir.sort(key=sortByType)
     filenames = []
     if(not('/' in dir_name)):
         dir_name = dir_name + '/'
@@ -160,14 +174,14 @@ def main():
         old_string = './' + old_string #if not, change it
     removeElementFromList(filenames, old_string) #if yes, remove it
     #eliminate backup files from target files
-    backupFiles = scan_dir(backupDir)
+    backupFiles = scan_dir(backupDir, list='all')
     removeMultipleElementsFromList(filenames, backupFiles)
     origDir = os.path.realpath(dir_name).split('/')[-1] + '/' #name of basefolder
     backupFolder = getBackupFolderName(backupDir) + origDir
     #get string to search for and string to replace with
     source_str = readFile(old_string)
     replace_str = readFile(new_string)
-    isInfoValid, needBackup = confirmation(source_str, replace_str, filenames)
+    isInfoValid, needBackup = confirmation(source_str, replace_str, scanned_dir)
     if(not(isInfoValid)):
         sys.exit()
     print("Modified files: ")
