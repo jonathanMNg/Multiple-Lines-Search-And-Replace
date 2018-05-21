@@ -1,2 +1,3 @@
 
-<?php require_once('../foot21.php');?>dasdasdasdas
+sdas
+<p></p>

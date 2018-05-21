@@ -5,6 +5,6 @@
 <body>
 </body>
 </html>
-<p></p>
+<?php require_once('../foot21.php');?>dasdasda
 <random></random>
-<p></p>
+<?php require_once('../foot21.php');?>dasdasda
