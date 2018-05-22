@@ -1,5 +1,7 @@
 # Author: Jonathan Nguyen
 # Published: 05/19/2018
+# License: MIT
+# Python3.6
 import os, sys, fileinput
 from shutil import copy
 #Define constants
@@ -96,13 +98,21 @@ def confirmation(source_str, replace_str, filenames):
     infoResponse = False
     backupResponse = False
     print('- - - - - - - - - - - - - - - - - - - - -')
-    print("Search for: \n%s" % source_str)
+    print("REMOVE:")
+    print('\n'.join([' - '+ line for line in source_str.split('\n')]))
     print('- - - - - - - - - - - - - - - - - - - - -')
-    print("Replace with: \n%s" % replace_str)
+    input("Press <ENTER> to continue")
+    print('- - - - - - - - - - - - - - - - - - - - -')
+    print("REPLACE WITH:")
+    print('\n'.join([' + '+ line for line in replace_str.split('\n')]))
+    print('- - - - - - - - - - - - - - - - - - - - -')
+    input("Press <ENTER> to continue")
     print('- - - - - - - - - - - - - - - - - - - - -')
     print("Target files: \n%s" % '\n'.join(filenames))
     print('- - - - - - - - - - - - - - - - - - - - -')
     isCorrect = input("Are these information all correct? (y/N) ")
+    while(isCorrect.strip() == ''):
+        isCorrect = input()
     if(isCorrect.strip().lower() == 'y'):
         infoResponse = True
     elif(isCorrect.strip().lower() != 'n'):
@@ -113,6 +123,9 @@ def confirmation(source_str, replace_str, filenames):
         return infoResponse, backupResponse
     print('- - - - - - - - - - - - - - - - - - - - -')
     isBackup = input("Do you want to create a backup for the modified files? (y/N) ")
+    while(isBackup.strip() == ''):
+        isBackup = input()
+    print('- - - - - - - - - - - - - - - - - - - - -')
     if(isBackup.strip().lower() == 'y'):
         backupResponse = True
         return infoResponse, backupResponse
@@ -164,6 +177,6 @@ def main():
             tmpFile = tmpFile.replace(source_str, replace_str)
             with open(filename, "w") as file:
                 file.write(tmpFile)
-
+    print('- - - - - - - - - - - - - - - - - - - - -')
 if __name__=="__main__":
     main()
