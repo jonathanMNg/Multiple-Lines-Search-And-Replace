@@ -7,6 +7,3 @@
 </html>
 <?php require_once('../foot.php');?>
 <p></p>
-<random></random>
-<?php require_once('../foot.php');?>
-<p></p>

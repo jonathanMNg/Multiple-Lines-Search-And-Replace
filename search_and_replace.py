@@ -96,9 +96,9 @@ def confirmation(source_str, replace_str, filenames):
     infoResponse = False
     backupResponse = False
     print('- - - - - - - - - - - - - - - - - - - - -')
-    print("Old string: \n%s" % source_str)
+    print("Search for: \n%s" % source_str)
     print('- - - - - - - - - - - - - - - - - - - - -')
-    print("New string: \n%s" % replace_str)
+    print("Replace with: \n%s" % replace_str)
     print('- - - - - - - - - - - - - - - - - - - - -')
     print("Target files: \n%s" % '\n'.join(filenames))
     print('- - - - - - - - - - - - - - - - - - - - -')
@@ -137,7 +137,8 @@ def main():
     scanned_dir.sort(key=sortByType)
     filenames = []
     backupDir = dir_name + BACKUPFOLDER + '/'
-    backupFolder = ''
+    origDir = os.path.realpath(dir_name).split('/')[-1] #name of basefolder
+    backupFolder = getBackupFolderName(backupDir) + origDir + '/'
     for filename in scanned_files:
         if(file_ext.lower() == filename.split('.')[-1].lower()):
             filenames.append(filename)
@@ -147,10 +148,6 @@ def main():
     removeMultipleFilesFromList(filenames, backupFiles) #remove backup folder from target files
     removeMultipleFilesFromList(filenames, [old_string, new_string]) #remove backup folder from target files
     removeFileFromList(scanned_dir, backupDir) #remove backup folder from target files
-    print(filenames)
-    exit()
-    origDir = os.path.realpath(dir_name).split('/')[-1] #name of basefolder
-    backupFolder = getBackupFolderName(backupDir) + origDir + '/'
     #get string to search for and string to replace with
     source_str = readFile(old_string).strip()
     replace_str = readFile(new_string).strip()
