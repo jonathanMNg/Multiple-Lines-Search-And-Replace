@@ -36,10 +36,10 @@ def scan_dir(dir_name, list):
                 for file in files:
                     scanned_files.append( (os.path.join(subdir,file)))
         elif(list=='dir'):
-            for file in os.listdir(dir_name):
-                if(os.path.isdir(dir_name+'/'+file)):
-                    file = file + '/'
-                scanned_files.append(file)
+            for dir in os.listdir(dir_name):
+                if(os.path.isdir(dir_name+dir)):
+                    dir = dir + '/'
+                scanned_files.append(dir_name + dir)
     return scanned_files
 def getDirname(path, root):
     rootLen = len(os.path.abspath(root).split('/'))
@@ -50,16 +50,19 @@ def sortByType(filename):
         return filename[-1] + filename
     else:
         return filename
-def removeElementFromList(l, val):
-    if(val in l):
-        l.remove(val)
-        return True
-    else:
-        return False
-def removeMultipleElementsFromList(l, vals):
+def removeFileFromList(l, file):
+    for lfile in l:
+        try:
+            if(os.path.samefile(file, lfile)):
+                l.remove(lfile)
+                return True
+        except:
+            pass
+    return False
+def removeMultipleFilesFromList(l, files):
     removedFilesCount = 0
-    for val in vals:
-        if(removeElementFromList(l, val)):
+    for file in files:
+        if(removeFileFromList(l, file)):
             removedFilesCount = removedFilesCount + 1
     return removedFilesCount
 
@@ -81,9 +84,10 @@ def getBackupFolderName(dest):
 def doBackupFile(filename, backupFolder):
     root = '/'.join(os.path.abspath(backupFolder).split('/')[:-3])
     baseFolder = getDirname(filename, root)
-    if(baseFolder == backupFolder.split('/')[-2] + '/'):
-        baseFolder = ''
+    if(any([baseFolder.split('/')[0] in backupFolder.split('/')])):
+        baseFolder = baseFolder.replace(baseFolder.split('/')[0],'')
     backupFile = backupFolder + baseFolder + os.path.basename(filename)
+    backupFile = backupFile.replace('//','/')
     backupDest = os.path.dirname(backupFile)
     if not os.path.exists(backupDest):
         os.makedirs(backupDest)
@@ -135,15 +139,16 @@ def main():
     backupDir = dir_name + BACKUPFOLDER + '/'
     backupFolder = ''
     for filename in scanned_files:
-        if(file_ext == filename.split('.')[-1].lower()):
+        if(file_ext.lower() == filename.split('.')[-1].lower()):
             filenames.append(filename)
     if(len(filenames) == 0):
         sys.exit("Couldn't find any file with extension `.%s`" % file_ext)
-    #eliminate source file from target files
-    removeElementFromList(filenames, old_string) #if yes, remove it
-    #eliminate backup files from target files
     backupFiles = scan_dir(backupDir, list='all')
-    removeMultipleElementsFromList(filenames, backupFiles) #remove backup folder from target files
+    removeMultipleFilesFromList(filenames, backupFiles) #remove backup folder from target files
+    removeMultipleFilesFromList(filenames, [old_string, new_string]) #remove backup folder from target files
+    removeFileFromList(scanned_dir, backupDir) #remove backup folder from target files
+    print(filenames)
+    exit()
     origDir = os.path.realpath(dir_name).split('/')[-1] #name of basefolder
     backupFolder = getBackupFolderName(backupDir) + origDir + '/'
     #get string to search for and string to replace with
